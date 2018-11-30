@@ -147,7 +147,7 @@ Now that your EKS master nodes are created, you can launch and configure your wo
 
 To launch your worker nodes, run the following CloudFormation CLI command:
 
-Be sure to update the ClusterName value on line 7 to reflect your cluster name.
+Be sure to update the stack name so that it is unique (on line 2) and ClusterName value on line 7 to reflect your cluster name.
 
     $ aws cloudformation create-stack \
       --stack-name k8s-workshop-worker-nodes \
