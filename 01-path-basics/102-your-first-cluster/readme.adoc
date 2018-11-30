@@ -179,7 +179,10 @@ Node provisioning usually takes less than 5 minutes. You can query the status of
 
 To enable worker nodes to join your cluster, download and run the `aws-auth-cm.sh` script.
 
-    aws s3 cp s3://aws-kubernetes-artifacts/v0.5/aws-auth-cm.sh . && \
+    aws s3 cp s3://aws-kubernetes-artifacts/v0.5/aws-auth-cm.sh . 
+    
+Update line 12 to reflect the stack name you are using for your worker nodes.
+    
     chmod +x aws-auth-cm.sh && \
     . ./aws-auth-cm.sh
 
