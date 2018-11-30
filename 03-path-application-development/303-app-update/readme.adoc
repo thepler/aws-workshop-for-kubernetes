@@ -537,16 +537,6 @@ Run this command to delete all resource created above:
 
     $ kubectl delete svc/app-service deployment/app-v1 deployment/app-v2
 
-=== Ingress Controller (Not Yet Implemented)
-
-Achieving the right percentage of traffic using Deployments and Services requires spinning-up as many pods as necessary. For example, if the version `v1` has 4 replicas of a pod. Then, in order to direct 5% traffic to the version `v2`, 1 pod replica of `v2` version would require 16 more replicas of `v1` version. This is not an optimal usage of resource. Weighted traffic switching with Kubernetes Ingress can be used to solve this problem.
-
-https://github.com/zalando-incubator/kube-ingress-aws-controller[Kubernetes Ingress Controller for AWS], by Zalando, is an ingress controller for Kubernetes.
-
-    $ kubectl apply -f templates/ingress-controller.yaml
-    deployment "app-ingress-controller" created
-
-
 You are now ready to continue on with the workshop!
 
 :frame: none
