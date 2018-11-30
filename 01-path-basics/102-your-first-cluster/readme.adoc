@@ -132,6 +132,7 @@ Change the following lines to reflect your cluster name
 
     'sed -i -e "s#<endpoint-url>#$(aws eks describe-cluster --name k8s-workshop'
     'sed -i -e "s#<base64-encoded-ca-cert>#$(aws eks describe-cluster --name k8s-workshop'
+    'sed -i -e "s#<cluster-name>#k8s-workshop'
 
     chmod +x create-kubeconfig.sh && \
     . ./create-kubeconfig.sh
