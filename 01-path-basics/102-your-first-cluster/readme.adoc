@@ -228,19 +228,5 @@ You are now ready to continue on with the workshop!
 :grid: none
 :valign: top
 
-[align="center", cols="3", grid="none", frame="none"]
-|=====
-|image:button-continue-standard.png[link=../103-kubernetes-concepts/]
-|image:button-continue-developer.png[link=../103-kubernetes-concepts/]
-|image:button-continue-operations.png[link=../103-kubernetes-concepts/]
-|link:../../standard-path.adoc[Go to Standard Index]
-|link:../../developer-path.adoc[Go to Developer Index]
-|link:../../operations-path.adoc[Go to Operations Index]
-|=====
+
 The next step is link:../103-kubernetes-concepts[to learn about basic Kubernetes Concepts].
-
-The sections below provide information on other capabilities of Kubernetes clusters.
-You are welcome to read and refer to them should you need to use those capabilities.
-
-anchor:multi-master[]
-
