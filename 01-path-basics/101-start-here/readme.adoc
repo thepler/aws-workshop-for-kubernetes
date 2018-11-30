@@ -73,6 +73,9 @@ To install the script, run this command in the "bash" terminal tab of the Cloud9
 
 image:cloud9-run-script.png[Running the script in Cloud9 Terminal]
 
+clone this Git repo to your Cloud9 instance:
+
+    git clone https://github.com/sbruggeman/aws-workshop-for-kubernetes
 
 At this point you can restart the Cloud9 IDE terminal session to ensure that the kubectl completion is enabled. Once a new terminal window is opened, type `kubectl ver` and press `Tab` to autocomplete and press `Enter`. This will ensure that the `kubectl` tool is installed on the command line correctly and can autocomplete.
 
