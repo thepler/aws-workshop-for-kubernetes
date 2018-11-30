@@ -44,8 +44,10 @@ EKS can be used to create a highly available cluster, with multiple master nodes
 
 Create a Kubernetes cluster using the following command. Run it in the "bash" terminal tab at the bottom of the Cloud9 IDE. This will create a cluster with master nodes:
 
+Make sure to change the name of your cluster to something unique!
+
     $ aws eks create-cluster \
-      --name k8s-workshop \
+      --name k8s-cluster-name \
       --role-arn $EKS_SERVICE_ROLE \
       --resources-vpc-config subnetIds=${EKS_SUBNET_IDS},securityGroupIds=${EKS_SECURITY_GROUPS} \
       --kubernetes-version 1.10
@@ -54,7 +56,7 @@ The `EKS_SERVICE_ROLE`, `EKS_SUBNET_IDS`, and `EKS_SECURITY_GROUPS` environment 
 
 Cluster provisioning usually takes less than 10 minutes. You can query the status of your cluster with the following command. When your cluster status is `ACTIVE`, you can proceed.
 
-    $ aws eks describe-cluster --name k8s-workshop --query cluster.status --output text
+    $ aws eks describe-cluster --name k8s-cluster-name --query cluster.status --output text
 
 Note: If your 'create cluster' fails with an error like:
 ```
@@ -120,9 +122,14 @@ Re-run EKS create-cluster and you should now be able to create cluster. The outp
 
 In order to access the cluster locally, use a configuration file (sometimes referred to as a `kubeconfig` file). This configuration file can be created automatically.
 
-Once the cluster has moved to the `ACTIVE` state, download and run the `create-kubeconfig.sh` script.
+Once the cluster has moved to the `ACTIVE` state, download and run the `create-kubeconfig.sh` script. You'll need to modify the script before executing it to include the proper cluster name
 
-    aws s3 cp s3://aws-kubernetes-artifacts/v0.5/create-kubeconfig.sh . && \
+    aws s3 cp s3://aws-kubernetes-artifacts/v0.5/create-kubeconfig.sh . 
+
+Modify create-kubeconfig.sh
+
+Change 'sed -i -e "s#<endpoint-url>#$(aws eks describe-cluster --name k8s-workshop' to reflect your cluster name
+
     chmod +x create-kubeconfig.sh && \
     . ./create-kubeconfig.sh
 
@@ -139,6 +146,8 @@ You can test your kubectl configuration using 'kubectl get service'
 Now that your EKS master nodes are created, you can launch and configure your worker nodes.
 
 To launch your worker nodes, run the following CloudFormation CLI command:
+
+Be sure to update the ClusterName value on line 7 to reflect your cluster name.
 
     $ aws cloudformation create-stack \
       --stack-name k8s-workshop-worker-nodes \
@@ -235,61 +244,3 @@ You are welcome to read and refer to them should you need to use those capabilit
 
 anchor:multi-master[]
 
-== Alternative: Create a Kubernetes Cluster with kops
-
-This section will walk you through how to install a Kubernetes cluster on AWS using kops.
-
-https://github.com/kubernetes/kops[kops, window="_blank"], short for Kubernetes Operations, is a set of tools for installing, operating, and deleting Kubernetes clusters. kops can also perform rolling upgrades from older versions of Kubernetes to newer ones, and manage the cluster add-ons.
-
-kops can be used to create a highly available cluster, with multiple master and worker nodes spread across multiple availability zones.
-The master and worker nodes within the cluster can use either DNS or the https://github.com/weaveworks/mesh[Weave Mesh, window="_blank"] *gossip* protocol for name resolution.  For this workshop, we will use the gossip protocol.  A gossip-based cluster is easier and quicker to setup, and does not require a domain, subdomain, or Route53 hosted zone to be registered. Instructions for creating a DNS-based cluster are provided as an appendix at the bottom of this page.
-
-To create a cluster using the gossip protocol, simply use a cluster name with a suffix of `.k8s.local`. In the following steps, we will use `example.cluster.k8s.local` as a sample gossip cluster name. You may choose a different name as long as it ends with `.k8s.local`.
-
-The command below creates a cluster in a multi-master, multi-node, and multi-az configuration.
-Run it in the "bash" terminal tab at the bottom of the Cloud9 IDE.
-We can create and build the cluster in one step by passing the `--yes` flag.
-
-    $ kops create cluster \
-      --name example.cluster.k8s.local \
-      --master-count 3 \
-      --node-count 5 \
-      --zones $AWS_AVAILABILITY_ZONES \
-      --yes
-
-A multi-master cluster can be created by using the `--master-count` option and specifying the number of master nodes. An odd value is recommended. By default, the master nodes are spread across the AZs specified using the `--zones` option. Alternatively, you can use the `--master-zones` option to explicitly specify the zones for the master nodes.
-
-The `--zones` option is also used to distribute the worker nodes. The number of workers is specified using the `--node-count` option.
-
-It will take 5-8 minutes for the cluster to be created. Validate the cluster:
-
-```
-$ kops validate cluster
-Using cluster from kubectl context: example.cluster.k8s.local
-
-Validating cluster example.cluster.k8s.local
-
-INSTANCE GROUPS
-NAME      ROLE  MACHINETYPE MIN MAX SUBNETS
-master-eu-central-1a Master  m3.medium 1 1 eu-central-1a
-master-eu-central-1b Master  m3.medium 1 1 eu-central-1b
-master-eu-central-1c Master  c4.large  1 1 eu-central-1c
-nodes     Node  t2.medium 5 5 eu-central-1a,eu-central-1b,eu-central-1c
-
-NODE STATUS
-NAME        ROLE  READY
-ip-172-20-101-97.ec2.internal node  True
-ip-172-20-119-53.ec2.internal node  True
-ip-172-20-124-138.ec2.internal  master  True
-ip-172-20-35-15.ec2.internal  master  True
-ip-172-20-63-104.ec2.internal node  True
-ip-172-20-69-241.ec2.internal node  True
-ip-172-20-84-65.ec2.internal  node  True
-ip-172-20-93-167.ec2.internal master  True
-
-Your cluster example.cluster.k8s.local is ready
-```
-
-Note that all masters are spread across different AZs.
-
-Your output may differ slightly from the one shown here based up on the type of cluster you created.
