@@ -282,15 +282,15 @@ NGINX container requires fairly low memory and CPU. And so these request and lim
 	    image: jboss/wildfly:11.0.0.Final
 	    resources:
 	      limits:
-	        memory: "200Mi"
+	        memory: "100Mi"
 	        cpu: 2
 	      requests:
-	        memory: "100Mi"
+	        memory: "50Mi"
 	        cpu: 1
 	    ports:
 	    - containerPort: 8080
 
-The max amount of memory allocated for the WildFly container in this pod is restricted to 200MB. Let's create this Pod:
+The max amount of memory allocated for the WildFly container in this pod is restricted to 100MB. Let's create this Pod:
 
 	$ kubectl apply -f pod-resources1.yaml
 	pod "wildfly-pod" created
@@ -333,7 +333,7 @@ Now, the Pod successfully starts.
 Get more details about the resources allocated to the Pod:
 
 	$ kubectl get pod/wildfly-pod -o jsonpath={.spec.containers[].resources}
-	map[limits:map[cpu:2 memory:300Mi] requests:map[cpu:1 memory:100Mi]]
+	map[limits:map[cpu:2 memory:200Mi] requests:map[cpu:1 memory:50Mi]]
 
 === Quality of service
 
