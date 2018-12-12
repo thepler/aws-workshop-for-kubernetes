@@ -16,6 +16,7 @@ spec:
       labels:
         app: cluster-autoscaler
     spec:
+      serviceAccountName: cluster-autoscaler
       containers:
         - image: awspartners/cluster-autoscaler:v0.6.0
           name: cluster-autoscaler
