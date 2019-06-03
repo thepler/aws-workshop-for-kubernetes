@@ -1,0 +1,97 @@
+= Kubernetes - Setup Cloud9 Development Environment
+:toc:
+:icons:
+:linkattrs:
+:imagesdir: ../../resources/images
+
+
+This section walks you through the creating a Kubernetes development environment using https://aws.amazon.com/cloud9/[AWS Cloud9].  This will provide you with a cloud-based integrated development environment (IDE) that will let you write, run, and debug containerized workloads using just a web browser.
+
+== Create AWS Cloud9 Environment
+=== AWS Cloud9 Console
+
+We can create the Cloud9 development environment via CloudFormation.
+This CloudFormation template will spin up the Cloud9 IDE, as well as configure the IDE environment for the rest of the workshop.
+
+The CloudFormation template will use an existing VPC which has been pre-provisioned by AWS.
+
+Click on the "Deploy to AWS" button and follow the CloudFormation prompts to begin.
+
+[NOTE]
+AWS Cloud9 is currently available in 5 regions, and EKS is currently available in 2 regions (us-east-1 and us-west-2).
+Please choose the region closest to you.  If you choose a region for Cloud9 that does not support EKS, you need to create VPC resources and change environment variables. This configuration has not been tested.
+
+|===
+
+|Region | Launch template with an existing VPC
+| *N. Virginia* (us-east-1)
+a| image::./deploy-to-aws.png[link=https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=k8s-workshop&templateURL=https://s3.amazonaws.com/aws-kubernetes-artifacts/v0.5/lab-ide-novpc.template]
+
+| *Oregon* (us-west-2)
+a| image::./deploy-to-aws.png[link=https://console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/new?stackName=k8s-workshop&templateURL=https://s3.amazonaws.com/aws-kubernetes-artifacts/v0.5/lab-ide-novpc.template]
+
+| *Ohio* (us-east-2)
+a| image::./deploy-to-aws.png[link=https://console.aws.amazon.com/cloudformation/home?region=us-east-2#/stacks/new?stackName=k8s-workshop&templateURL=https://s3.amazonaws.com/aws-kubernetes-artifacts/v0.5/lab-ide-novpc.template]
+
+| *Ireland* (eu-west-1)
+a| image::./deploy-to-aws.png[link=https://console.aws.amazon.com/cloudformation/home?region=eu-west-1#/stacks/new?stackName=k8s-workshop&templateURL=https://s3.amazonaws.com/aws-kubernetes-artifacts/v0.5/lab-ide-novpc.template]
+
+
+|===
+
+Provide a *unique stack name* and Click *Next*. You can give Tags such as Key=Name, Value=k8s-workshop, and click *Next*. Make sure
+to check *I acknowledge that AWS CloudFormation might create IAM resources with custom names* and click *Create*.
+
+CloudFormation creates nested stacks and builds several resources that are required for this workshop. Wait until all the resources are created. Once the status for *k8s-workshop* changes to *CREATE_COMPLETE*,
+you can open Cloud9 IDE. To open the Cloud9 IDE environment, click on the "Outputs" tab in CloudFormation Console and click on the "Cloud9IDE" URL.
+
+image:cloudformation-output-tab.png[CloudFormation Output Tab]
+
+You should see an environment similar to this:
+
+image:cloud9-development-environment-welcome.png[]
+
+=== Cloud9 Instance Role
+
+The Cloud9 IDE needs to use the assigned IAM Instance profile. Open the "AWS Cloud9" menu, go to "Preferences", go to "AWS Settings", and disable "AWS managed temporary credentials" as depicted in the diagram here:
+
+image:cloud9-disable-temp-credentials.png[]
+
+=== Cloud9 Instance Setup
+
+Once your Cloud9 is ready, clone this repo down to your Cloud9 environment.
+`git clone git@github.com:dewjam/aws-workshop-for-kubernetes.git`
+
+We have provided a "Utilities" Dockerfile which can be built that includes all
+the tools you need to complete the workshop:
+- kubectl _(the Kubernetes CLI)_
+- heptio/authenticator _(for authentication to the EKS cluster)_
+- AWS CLI
+- sets appropriate environmental variables
+- clone the workshop repository into Cloud9
+
+Build the Utilities image
+```
+cd aws-workshop-for-kubernetes/01-path-basics/utilities
+docker build -t utilities .
+```
+
+Run the Utilities image
+`docker run -it -v ~/.aws/:/root/.aws -v ~/.kube/:/root/.kube utilities`
+
+At this point you, you should be presented with a "$" prompt.  You are now ready
+to continue on with the workshop!
+
+[NOTE]
+All shell commands _(starting with "$")_ throughout the rest of the workshop should be run in this tab. You may want to resize it upwards to make it larger.
+
+:frame: none
+:grid: none
+:valign: top
+
+[align="center", cols="3", grid="none", frame="none"]
+|=====
+|image:button-continue-standard.png[link=../102-your-first-cluster/]
+|=====
+
+The next step is link:../102-your-first-cluster[to create a Kubernetes cluster].
