@@ -237,4 +237,4 @@ You are now ready to continue on with the workshop!
 :valign: top
 
 
-The next step is link:../103-kubernetes-concepts[to learn about basic Kubernetes Concepts].
+The next step is link:../202-kubernetes-concepts[to learn about basic Kubernetes Concepts].
