@@ -60,6 +60,7 @@ image:cloud9-disable-temp-credentials.png[]
 === Cloud9 Instance Setup
 
 Once your Cloud9 is ready, clone this repo down to your Cloud9 environment.
+
 `git clone https://github.com/dewjam/aws-workshop-for-kubernetes.git`
 
 We have provided a "Utilities" Dockerfile which can be built that includes all
@@ -72,7 +73,7 @@ the tools you need to complete the workshop:
 
 Build the Utilities image
 ```
-cd aws-workshop-for-kubernetes/01-container-basics/utilities
+cd aws-workshop-for-kubernetes/01-container-basics/101-start-here/utilities
 docker build -t utilities .
 ```
 
