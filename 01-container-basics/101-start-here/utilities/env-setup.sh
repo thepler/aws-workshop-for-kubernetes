@@ -17,7 +17,7 @@ if [ "$AWS_DEFAULT_REGION" == "us-east-1" ]; then
 elif [ "$AWS_DEFAULT_REGION" == "us-west-2" ]; then
   export EKS_WORKER_AMI=ami-0923e4b35a30a5f53
 fi
-echo "EKS_NODE_AMI"=$EKS_WORKER_AMI>> /etc/environment
+echo "EKS_WORKER_AMI"=$EKS_WORKER_AMI>> /etc/environment
 
 # Persist lab variables
 echo "AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION" >> /etc/environment
@@ -28,3 +28,4 @@ echo "EKS_VPC_ID=$EKS_VPC_ID" >> /etc/environment
 echo "EKS_SUBNET_IDS=$EKS_SUBNET_IDS" >> /etc/environment
 echo "EKS_SECURITY_GROUPS=$EKS_SECURITY_GROUPS" >> /etc/environment
 echo "EKS_SERVICE_ROLE=$EKS_SERVICE_ROLE" >> /etc/environment
+echo "EKS_NODE_STACK_NAME=${EKS_CLUSTER_NAME}-nodes" >> /etc/environment

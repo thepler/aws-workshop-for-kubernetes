@@ -17,7 +17,7 @@ If you have not set up the link:../101-start-here[Cloud9 Development Environment
 In order to complete the exercises in the workshop, you'll need the proper IAM permissions set.
 
 === Cloud9 IDE
-When performing the exercises through the Cloud9 IDE (recommended), permissions are automatically created for when you link:https://github.com/aws-samples/aws-workshop-for-kubernetes/tree/master/01-path-basics/101-start-here#create-aws-cloud9-environment[deploy the Cloud9 environment and run the build script].
+When performing the exercises through the Cloud9 IDE (recommended), permissions are automatically created for when you link:https://github.com/dewjam/aws-workshop-for-kubernetes/tree/master/01-container-basics/101-start-here[deploy the Cloud9 environment and build the utilities container].
 
 The IAM role assumed by the Cloud9 IDE will have a name similar to **k8s-workshop-LabIdeRole-xxxx**, and contain the following managed policies:
 
@@ -117,7 +117,8 @@ Re-run EKS create-cluster and you should now be able to create cluster. The outp
 
 === Create the configuration file
 
-In order to access the cluster locally, use a configuration file (sometimes referred to as a `kubeconfig` file). This configuration file can be created automatically.
+In order to access the cluster, you must create a Kubectl configuration file (sometimes referred to as a `kubeconfig` file).
+This configuration file can be created automatically via an AWS CLI command.
 
 Once the cluster has moved to the `ACTIVE` state, create the Kubectl Configuration file
 
@@ -162,11 +163,29 @@ Node provisioning usually takes less than 5 minutes. You can query the status of
 
 **Copy the ARN for the NodeInstanceRole from the output and save it for the next step.**
 
+```
+[
+    "CREATE_COMPLETE",
+    [
+        {
+            "OutputKey": "NodeInstanceRole",
+            "OutputValue": "arn:aws:iam::12345678:role/workshop-eks-nodes-NodeInstanceRole-BHCMWDPXZWBP",
+            "Description": "The node instance role"
+        },
+        {
+            "OutputKey": "NodeSecurityGroup",
+            "OutputValue": "sg-0284c5c671f9e4ac2",
+            "Description": "The security group for the node group"
+        }
+    ]
+]
+```
+
 === Enable worker nodes to join cluster
 
 To enable worker nodes to join your cluster, you must apply a ConfigMap to your cluster including the ARN for the IAM role assigned to
-the worker nodes.  Under the `Templates` folder for this module (201-your-first-cluster), open the aws-auth-cm.yaml file. Next
-update the `rolearn` to the ARN recorded in the previous step.
+the worker nodes.  Under the `02-eks-cluster-creation/201-your-first-cluster/templates/` folder, open the `aws-auth-cm.yaml` file with
+the Cloud9 file editor. Next update the `rolearn` so it matches the ARN recorded in the previous step.
 
 ```
 apiVersion: v1
@@ -184,7 +203,8 @@ data:
 ```
 
 Next, apply this ConfigMap using the Kubectl command
-    $ kubectl apply -f 02-eks-clsuter-creation/201-your-first-cluster/templates/aws-auth-cm.yaml
+
+    $ kubectl apply -f 02-eks-cluster-creation/201-your-first-cluster/templates/aws-auth-cm.yaml
 
 Watch the status of your nodes and wait for them to reach the `Ready` status.
 

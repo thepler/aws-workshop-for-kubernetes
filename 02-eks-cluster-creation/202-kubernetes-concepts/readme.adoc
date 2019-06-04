@@ -44,8 +44,8 @@ If you do not see this output, or receive an error, please ensure that you've fo
 This command instantiates an nginx container into your cluster, inside a pod:
 
     $ kubectl run nginx --image=nginx
-    
-    
+
+
     deployment "nginx" created
 
 Get the list of deployments:
@@ -265,7 +265,7 @@ Create the pod:
 Get more details about the requests and limits:
 
 	$ kubectl get pod/nginx-pod2 -o jsonpath={.spec.containers[].resources}
-	
+
 	map[limits:map[memory:200Mi cpu:2] requests:map[cpu:1 memory:100Mi]]
 
 NGINX container requires fairly low memory and CPU. And so these request and limit numbers would work well, and the pod is started correctly. Now, let's try to start a WildFly pod using similar numbers. The configuration file for the same is shown:
@@ -294,7 +294,7 @@ NGINX container requires fairly low memory and CPU. And so these request and lim
 The max amount of memory allocated for the WildFly container in this pod is restricted to 100MB. Let's create this Pod:
 
 	$ kubectl apply -f pod-resources1.yaml
-	
+
 	pod "wildfly-pod" created
 
 Watch the status of the Pod:
@@ -315,7 +315,7 @@ Watch the status of the Pod:
 
 `OOMKilled` shows that the container was terminated because it ran out of memory.
 
-To correct this, we'll need to re-create the pod with higher memory limits.  
+To correct this, we'll need to re-create the pod with higher memory limits.
 
 Although it may be instinctive to simply adjust the memory limit in the existing pod definition and re-apply it, Kubernetes does not currently support changing resource limits on running pods, so we'll need to first delete the existing pod, then recreate it.
 
@@ -1622,7 +1622,3 @@ You are now ready to continue on with the workshop!
 :valign: top
 
 [align="center", cols="1", grid="none", frame="none"]
-|=====
-|image:button-continue-developer.png[link=../../03-path-application-development/302-app-discovery]
-|link:../../developer-path.adoc[Go to Developer Index]
-|=====
