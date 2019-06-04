@@ -1,17 +1,11 @@
 FROM alpine:3.9.4
-## Set environmental variables
-ENV EKS_SUBNET_IDS="YOUR_SUBNETS" \
-    EKS_SECURITY_GROUPS="YOUR_SECURITY_GROUP" \
-    EKS_SERVICE_ROLE="YOUR_EKS_SERVICE_ROLE" \
-    EKS_CLUSTER_NAME="YOUR_CLUSTER_NAME" \
-    EKS_NODE_STACK_NAME="YOUR_NODE_STACK_NAME" \
-    AWS_DEFAULT_REGION="YOUR_REGION" \
-    EKS_NODE_AMI="TBD" \
-    EKS_VPC_ID="TBD"
-
 
 ## Install Dependencies
 RUN apk --update add \
+        git \
+        curl \
+        openssh \
+        jq \
         wget \
         python3 \
         py-pip \
@@ -32,5 +26,15 @@ RUN wget -q -O /usr/local/bin/aws-iam-authenticator https://amazon-eks.s3-us-wes
 RUN pip3 install --upgrade pip \
  && pip3 install awscli
 
+RUN git clone https://github.com/dewjam/aws-workshop-for-kubernetes.git
+
+## Execute environment setup script
+COPY env-setup.sh .
+RUN chmod +x env-setup.sh \
+    && ./env-setup.sh
+
+## Set work directory
+WORKDIR /aws-workshop-for-kubernetes
+
 ## Set default command
-CMD bin/sh
+CMD eval $(cat /etc/environment) sh

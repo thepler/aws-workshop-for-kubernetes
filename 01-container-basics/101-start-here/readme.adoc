@@ -25,16 +25,16 @@ Please choose the region closest to you.  If you choose a region for Cloud9 that
 
 |Region | Launch template with an existing VPC
 | *N. Virginia* (us-east-1)
-a| image::./deploy-to-aws.png[link=https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=k8s-workshop&templateURL=https://s3.amazonaws.com/aws-kubernetes-artifacts/v0.5/lab-ide-novpc.template]
+a| image::./deploy-to-aws.png[link=https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=k8s-workshop&templateURL=https://205675256514-cfn-templates.s3.amazonaws.com/cloud9.json]
 
 | *Oregon* (us-west-2)
-a| image::./deploy-to-aws.png[link=https://console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/new?stackName=k8s-workshop&templateURL=https://s3.amazonaws.com/aws-kubernetes-artifacts/v0.5/lab-ide-novpc.template]
+a| image::./deploy-to-aws.png[link=https://console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/new?stackName=k8s-workshop&templateURL=https://205675256514-cfn-templates.s3.amazonaws.com/cloud9.json]
 
 | *Ohio* (us-east-2)
-a| image::./deploy-to-aws.png[link=https://console.aws.amazon.com/cloudformation/home?region=us-east-2#/stacks/new?stackName=k8s-workshop&templateURL=https://s3.amazonaws.com/aws-kubernetes-artifacts/v0.5/lab-ide-novpc.template]
+a| image::./deploy-to-aws.png[link=https://console.aws.amazon.com/cloudformation/home?region=us-east-2#/stacks/new?stackName=k8s-workshop&templateURL=https://205675256514-cfn-templates.s3.amazonaws.com/cloud9.json]
 
 | *Ireland* (eu-west-1)
-a| image::./deploy-to-aws.png[link=https://console.aws.amazon.com/cloudformation/home?region=eu-west-1#/stacks/new?stackName=k8s-workshop&templateURL=https://s3.amazonaws.com/aws-kubernetes-artifacts/v0.5/lab-ide-novpc.template]
+a| image::./deploy-to-aws.png[link=https://console.aws.amazon.com/cloudformation/home?region=eu-west-1#/stacks/new?stackName=k8s-workshop&templateURL=https://205675256514-cfn-templates.s3.amazonaws.com/cloud9.json]
 
 
 |===
@@ -68,11 +68,11 @@ the tools you need to complete the workshop:
 - heptio/authenticator _(for authentication to the EKS cluster)_
 - AWS CLI
 - sets appropriate environmental variables
-- clone the workshop repository into Cloud9
+- clones the workshop git repo into the container image
 
 Build the Utilities image
 ```
-cd aws-workshop-for-kubernetes/01-path-basics/utilities
+cd aws-workshop-for-kubernetes/01-container-basics/utilities
 docker build -t utilities .
 ```
 
