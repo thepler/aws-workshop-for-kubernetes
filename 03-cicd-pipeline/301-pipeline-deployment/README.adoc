@@ -22,12 +22,6 @@ image::architecture.png[Architecture]
 
 A functioning Kubernetes cluster and config file to authenticate to the cluster, by default this is located at `~/.kube/config`
 
-Clone this repository
-
-    git clone https://github.com/aws-samples/aws-kube-codesuite
-
-This creates a directory named `aws-kube-codesuite` in your current directory, which contains the code we need for this tutorial. Change to this directory.
-
 === Application - initial deployment and service Provisioning
 
     kubectl apply -f ./kube-manifests/deploy-first.yml
