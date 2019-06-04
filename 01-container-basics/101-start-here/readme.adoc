@@ -60,7 +60,7 @@ image:cloud9-disable-temp-credentials.png[]
 === Cloud9 Instance Setup
 
 Once your Cloud9 is ready, clone this repo down to your Cloud9 environment.
-`git clone git@github.com:dewjam/aws-workshop-for-kubernetes.git`
+`git clone https://github.com/dewjam/aws-workshop-for-kubernetes.git`
 
 We have provided a "Utilities" Dockerfile which can be built that includes all
 the tools you need to complete the workshop:
@@ -77,7 +77,13 @@ docker build -t utilities .
 ```
 
 Run the Utilities image
-`docker run -it -v ~/.aws/:/root/.aws -v ~/.kube/:/root/.kube utilities`
+```
+docker run -it -v ~/.aws/:/root/.aws \
+    -v ~/.kube/:/root/.kube \
+    -v ~/environment/aws-workshop-for-kubernetes:/aws-workshop-for-kubernetes \
+    -e EKS_CLUSTER_NAME=<your_unique_cluster_name>
+    utilities
+```
 
 At this point you, you should be presented with a "$" prompt.  You are now ready
 to continue on with the workshop!

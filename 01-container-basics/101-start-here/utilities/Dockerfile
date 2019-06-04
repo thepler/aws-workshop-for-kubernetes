@@ -26,8 +26,6 @@ RUN wget -q -O /usr/local/bin/aws-iam-authenticator https://amazon-eks.s3-us-wes
 RUN pip3 install --upgrade pip \
  && pip3 install awscli
 
-RUN git clone https://github.com/dewjam/aws-workshop-for-kubernetes.git
-
 ## Execute environment setup script
 COPY env-setup.sh .
 RUN chmod +x env-setup.sh \

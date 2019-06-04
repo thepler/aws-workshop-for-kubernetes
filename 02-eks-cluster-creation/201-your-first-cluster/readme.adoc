@@ -45,7 +45,7 @@ Make sure to change the name of your cluster to something unique!
 
     $ aws eks create-cluster \
       --name ${EKS_CLUSTER_NAME} \
-      --role-arn $EKS_SERVICE_ROLE \
+      --role-arn ${EKS_SERVICE_ROLE} \
       --resources-vpc-config subnetIds=${EKS_SUBNET_IDS},securityGroupIds=${EKS_SECURITY_GROUPS} \
       --kubernetes-version 1.12
 
@@ -53,7 +53,7 @@ The `EKS_SERVICE_ROLE`, `EKS_SUBNET_IDS`, and `EKS_SECURITY_GROUPS` environment 
 
 Cluster provisioning usually takes less than 10 minutes. You can query the status of your cluster with the following command. When your cluster status is `ACTIVE`, you can proceed.
 
-    $ aws eks describe-cluster --name k8s-cluster-name --query cluster.status --output text
+    $ watch "aws eks describe-cluster --name ${EKS_CLUSTER_NAME} --query cluster.status --output text"
 
 Note: If your 'create cluster' fails with an error like:
 ```
@@ -119,20 +119,9 @@ Re-run EKS create-cluster and you should now be able to create cluster. The outp
 
 In order to access the cluster locally, use a configuration file (sometimes referred to as a `kubeconfig` file). This configuration file can be created automatically.
 
-Once the cluster has moved to the `ACTIVE` state, download and run the `create-kubeconfig.sh` script. You'll need to modify the script before executing it to include the proper cluster name
+Once the cluster has moved to the `ACTIVE` state, create the Kubectl Configuration file
 
-    aws s3 cp s3://aws-kubernetes-artifacts/v0.5/create-kubeconfig.sh .
-
-Modify create-kubeconfig.sh
-
-Change the following lines to reflect your cluster name
-
-    'sed -i -e "s#<endpoint-url>#$(aws eks describe-cluster --name k8s-workshop'
-    'sed -i -e "s#<base64-encoded-ca-cert>#$(aws eks describe-cluster --name k8s-workshop'
-    'sed -i -e "s#<cluster-name>#k8s-workshop'
-
-    chmod +x create-kubeconfig.sh && \
-    . ./create-kubeconfig.sh
+    $ aws eks update-kubeconfig --name ${EKS_CLUSTER_NAME}
 
 This will create a configuration file at `$HOME/.kube/config` and update the necessary environment variable for default access.
 
@@ -146,22 +135,21 @@ You can test your kubectl configuration using 'kubectl get service'
 
 Now that your EKS master nodes are created, you can launch and configure your worker nodes.
 
+First, create an SSH key pair for use with your nodes
+
+    $ ssh-keygen -t rsa -N "" -f ~/.ssh/id_rsa
+    $ aws ec2 create-key-pair --key-name ${EKS_NODE_STACK_NAME} --query 'KeyMaterial' --output text > $HOME/.ssh/k8s-workshop.pem
+
 To launch your worker nodes, run the following CloudFormation CLI command:
 
-Be sure to update the following:
-
-- Stack name so that it is unique (on line 2)
-- ClusterName value on line 7 to reflect your cluster name.
-- NodeGroupName on line 8 so that it is unique
-
     $ aws cloudformation create-stack \
-      --stack-name k8s-workshop-worker-nodes \
-      --template-url https://amazon-eks.s3-us-west-2.amazonaws.com/1.10.3/2018-06-05/amazon-eks-nodegroup.yaml \
+      --stack-name ${EKS_NODE_STACK_NAME} \
+      --template-url https://amazon-eks.s3-us-west-2.amazonaws.com/cloudformation/2019-02-11/amazon-eks-nodegroup.yaml \
       --capabilities "CAPABILITY_IAM" \
-      --parameters "[{\"ParameterKey\": \"KeyName\", \"ParameterValue\": \"${AWS_STACK_NAME}\"},
+      --parameters "[{\"ParameterKey\": \"KeyName\", \"ParameterValue\": \"${EKS_NODE_STACK_NAME}\"},
                      {\"ParameterKey\": \"NodeImageId\", \"ParameterValue\": \"${EKS_WORKER_AMI}\"},
-                     {\"ParameterKey\": \"ClusterName\", \"ParameterValue\": \"k8s-workshop\"},
-                     {\"ParameterKey\": \"NodeGroupName\", \"ParameterValue\": \"k8s-workshop-nodegroup\"},
+                     {\"ParameterKey\": \"ClusterName\", \"ParameterValue\": \"${EKS_CLUSTER_NAME}\"},
+                     {\"ParameterKey\": \"NodeGroupName\", \"ParameterValue\": \"${EKS_NODE_STACK_NAME}\"},
                      {\"ParameterKey\": \"ClusterControlPlaneSecurityGroup\", \"ParameterValue\": \"${EKS_SECURITY_GROUPS}\"},
                      {\"ParameterKey\": \"VpcId\", \"ParameterValue\": \"${EKS_VPC_ID}\"},
                      {\"ParameterKey\": \"Subnets\", \"ParameterValue\": \"${EKS_SUBNET_IDS}\"}]"
@@ -170,36 +158,41 @@ The `AWS_STACK_NAME`, `EKS_WORKER_AMI`, `EKS_VPC_ID`, `EKS_SUBNET_IDS`, and `EKS
 
 Node provisioning usually takes less than 5 minutes. You can query the status of your cluster with the following command. When your cluster status is `CREATE_COMPLETE`, you can proceed.
 
-    $ aws cloudformation describe-stacks --stack-name k8s-workshop-worker-nodes --query 'Stacks[0].StackStatus' --output text
+    $ watch 'aws cloudformation describe-stacks --stack-name "${EKS_NODE_STACK_NAME}" --query "Stacks[0].[StackStatus,Outputs]"'
+
+**Copy the ARN for the NodeInstanceRole from the output and save it for the next step.**
 
 === Enable worker nodes to join cluster
 
-To enable worker nodes to join your cluster, download and run the `aws-auth-cm.sh` script.
+To enable worker nodes to join your cluster, you must apply a ConfigMap to your cluster including the ARN for the IAM role assigned to
+the worker nodes.  Under the `Templates` folder for this module (201-your-first-cluster), open the aws-auth-cm.yaml file. Next
+update the `rolearn` to the ARN recorded in the previous step.
 
-    aws s3 cp s3://aws-kubernetes-artifacts/v0.5/aws-auth-cm.sh .
+```
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: aws-auth
+  namespace: kube-system
+data:
+  mapRoles: |
+    - rolearn: <ARN of instance role (not instance profile)>
+      username: system:node:{{EC2PrivateDNSName}}
+      groups:
+        - system:bootstrappers
+        - system:nodes
+```
 
-Update line 12 to reflect the stack name you are using for your worker nodes.
-
-    chmod +x aws-auth-cm.sh && \
-    . ./aws-auth-cm.sh
+Next, apply this ConfigMap using the Kubectl command
+    $ kubectl apply -f 02-eks-clsuter-creation/201-your-first-cluster/templates/aws-auth-cm.yaml
 
 Watch the status of your nodes and wait for them to reach the `Ready` status.
 
-    $ kubectl get nodes --watch
-    NAME                                            STATUS     ROLES     AGE       VERSION
-    ip-192-168-223-116.us-west-2.compute.internal   NotReady   <none>    0s        v1.10.3
-    ip-192-168-223-116.us-west-2.compute.internal   NotReady   <none>    0s        v1.10.3
-    ip-192-168-223-116.us-west-2.compute.internal   NotReady   <none>    0s        v1.10.3
-    ip-192-168-147-168.us-west-2.compute.internal   NotReady   <none>    0s        v1.10.3
-    ip-192-168-147-168.us-west-2.compute.internal   NotReady   <none>    0s        v1.10.3
-    ip-192-168-102-172.us-west-2.compute.internal   NotReady   <none>    0s        v1.10.3
-    ip-192-168-102-172.us-west-2.compute.internal   NotReady   <none>    0s        v1.10.3
-    ip-192-168-223-116.us-west-2.compute.internal   NotReady   <none>    10s       v1.10.3
-    ip-192-168-147-168.us-west-2.compute.internal   NotReady   <none>    10s       v1.10.3
-    ip-192-168-102-172.us-west-2.compute.internal   NotReady   <none>    10s       v1.10.3
-    ip-192-168-223-116.us-west-2.compute.internal   Ready     <none>    20s       v1.10.3
-    ip-192-168-147-168.us-west-2.compute.internal   Ready     <none>    20s       v1.10.3
-    ip-192-168-102-172.us-west-2.compute.internal   Ready     <none>    20s       v1.10.3
+    $ watch kubectl get nodes
+    NAME                            STATUS   ROLES    AGE    VERSION
+    ip-172-31-36-248.ec2.internal   Ready    <none>   104s   v1.12.7
+    ip-172-31-73-146.ec2.internal   Ready    <none>   103s   v1.12.7
+    ip-172-31-80-34.ec2.internal    Ready    <none>   104s   v1.12.7
 
 == Kubernetes Cluster Context
 
