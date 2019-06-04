@@ -74,8 +74,7 @@ the tools you need to complete the workshop:
 
 Build the Utilities image
 ```
-cd aws-workshop-for-kubernetes/01-container-basics/101-start-here/utilities
-docker build -t utilities .
+docker build -t utilities aws-workshop-for-kubernetes/01-container-basics/101-start-here/utilities/
 ```
 
 Run the Utilities image
@@ -102,4 +101,4 @@ All shell commands _(starting with "$")_ throughout the rest of the workshop sho
 |image:button-continue-standard.png[link=../102-your-first-cluster/]
 |=====
 
-The next step is link:../102-your-first-cluster[to create a Kubernetes cluster].
+The next step is link:../02-eks-cluster-creation/201-your-first-cluster[to create a Kubernetes cluster].

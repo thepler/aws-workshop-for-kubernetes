@@ -9,7 +9,7 @@ export AWS_MASTER_STACK="bryanvh-eks-vpc"
 export EKS_VPC_ID=$(aws cloudformation describe-stacks --stack-name $AWS_MASTER_STACK | jq -r '.Stacks[0].Outputs[]|select(.OutputKey=="VpcId")|.OutputValue')
 export EKS_SUBNET_IDS=$(aws cloudformation describe-stacks --stack-name $AWS_MASTER_STACK | jq -r '.Stacks[0].Outputs[]|select(.OutputKey=="SubnetIds")|.OutputValue')
 export EKS_SECURITY_GROUPS=$(aws cloudformation describe-stacks --stack-name $AWS_MASTER_STACK | jq -r '.Stacks[0].Outputs[]|select(.OutputKey=="SecurityGroups")|.OutputValue')
-export EKS_SERVICE_ROLE=$(aws cloudformation describe-stacks --stack-name $AWS_MASTER_STACK | jq -r '.Stacks[0].Outputs[]|select(.OutputKey=="EksServiceRoleArn")|.OutputValue')
+export EKS_SERVICE_ROLE=$(aws iam get-role --role-name eksServiceRole | jq -r '.Role.Arn')
 
 # EKS-Optimized AMI
 if [ "$AWS_DEFAULT_REGION" == "us-east-1" ]; then

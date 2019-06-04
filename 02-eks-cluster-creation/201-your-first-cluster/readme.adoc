@@ -185,7 +185,7 @@ Node provisioning usually takes less than 5 minutes. You can query the status of
 
 To enable worker nodes to join your cluster, you must apply a ConfigMap to your cluster including the ARN for the IAM role assigned to
 the worker nodes.  Under the `02-eks-cluster-creation/201-your-first-cluster/templates/` folder, open the `aws-auth-cm.yaml` file with
-the Cloud9 file editor. Next update the `rolearn` so it matches the ARN recorded in the previous step.
+the Cloud9 file editor. Then update the `rolearn` field so it matches the ARN recorded in the previous step.
 
 ```
 apiVersion: v1
