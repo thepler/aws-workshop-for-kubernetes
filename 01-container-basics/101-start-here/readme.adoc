@@ -101,4 +101,4 @@ All shell commands _(starting with "$")_ throughout the rest of the workshop sho
 |image:button-continue-standard.png[link=../102-your-first-cluster/]
 |=====
 
-The next step is link:../02-eks-cluster-creation/201-your-first-cluster[to create a Kubernetes cluster].
+The next step is link:../../02-eks-cluster-creation/201-your-first-cluster[to create a Kubernetes cluster].
