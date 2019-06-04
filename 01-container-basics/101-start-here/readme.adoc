@@ -26,17 +26,6 @@ Please choose the region closest to you.  If you choose a region for Cloud9 that
 |Region | Launch template with an existing VPC
 | *N. Virginia* (us-east-1)
 a| image::./deploy-to-aws.png[link=https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=k8s-workshop&templateURL=https://205675256514-cfn-templates.s3.amazonaws.com/cloud9.json]
-
-| *Oregon* (us-west-2)
-a| image::./deploy-to-aws.png[link=https://console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/new?stackName=k8s-workshop&templateURL=https://205675256514-cfn-templates.s3.amazonaws.com/cloud9.json]
-
-| *Ohio* (us-east-2)
-a| image::./deploy-to-aws.png[link=https://console.aws.amazon.com/cloudformation/home?region=us-east-2#/stacks/new?stackName=k8s-workshop&templateURL=https://205675256514-cfn-templates.s3.amazonaws.com/cloud9.json]
-
-| *Ireland* (eu-west-1)
-a| image::./deploy-to-aws.png[link=https://console.aws.amazon.com/cloudformation/home?region=eu-west-1#/stacks/new?stackName=k8s-workshop&templateURL=https://205675256514-cfn-templates.s3.amazonaws.com/cloud9.json]
-
-
 |===
 
 Provide a *unique stack name* and Click *Next*. You can give Tags such as Key=Name, Value=k8s-workshop, and click *Next*. Make sure
