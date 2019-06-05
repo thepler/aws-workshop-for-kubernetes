@@ -16,22 +16,30 @@ If you have not set up the link:../101-start-here[Cloud9 Development Environment
 
 In order to complete the exercises in the workshop, you'll need the proper IAM permissions set.
 
-=== Cloud9 IDE
-When performing the exercises through the Cloud9 IDE (recommended), permissions are automatically created for when you link:https://github.com/dewjam/aws-workshop-for-kubernetes/tree/master/01-container-basics/101-start-here[deploy the Cloud9 environment and build the utilities container].
+=== Build the `Utilities` container image
+We have provided a "Utilities" Dockerfile which can be built that includes all
+the tools you need to complete this workshop:
 
-The IAM role assumed by the Cloud9 IDE will have a name similar to **k8s-workshop-LabIdeRole-xxxx**, and contain the following managed policies:
+- kubectl _(the Kubernetes CLI)_
+- heptio/authenticator _(for authentication to the EKS cluster)_
+- AWS CLI
+- sets appropriate environmental variables
+- clones the workshop git repo into the container image
 
-* AmazonEC2FullAccess
-* IAMFullAccess
-* AmazonS3FullAccess
-* AmazonVPCFullAccess
-* AWSCloudFormationReadOnlyAccess
-* AmazonRoute53FullAccess
+Build the Utilities image
+```
+docker build -t utilities aws-workshop-for-kubernetes/01-container-basics/101-start-here/utilities/
+```
 
-The EKS service role will have a name similar to **k8s-workshop2-EksServiceR-AWSServiceRoleForAmazonE-xxx**, and contain the following managed policies:
-
-* AmazonEKSClusterPolicy
-* AmazonEKSServicePolicy
+Run the Utilities image
+```
+docker run -it \
+    -v ~/.aws/:/root/.aws \
+    -v ~/.kube/:/root/.kube \
+    -v ~/environment/aws-workshop-for-kubernetes:/aws-workshop-for-kubernetes
+    -e EKS_CLUSTER_NAME=<your_cluster_name>
+    utilities
+```
 
 == Create a Kubernetes Cluster with EKS
 

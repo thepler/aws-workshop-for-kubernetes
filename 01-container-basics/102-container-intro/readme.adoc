@@ -46,7 +46,7 @@ This should output steps that look something like this:
 
 ```
 Sending build context to Docker daemon 4.096 kB
-Sending build context to Docker daemon 
+Sending build context to Docker daemon
 Step 0 : FROM ubuntu:latest
  ---> 6aa0b6d7eb90
 Step 1 : MAINTAINER widha@amazon.com
@@ -82,7 +82,7 @@ This command runs the image in daemon mode and maps the docker container port 30
 To check if your container is running:
 
 ```
-$ docker ps 
+$ docker ps
 ```
 
 This should return a list of all the currently running containers. In this example, it should just return a single container, the one that we just started:
@@ -176,7 +176,7 @@ Login Succeeded
 
 == Pushing our tested images to ECR
 
-Now that we've tested our images locally, we need to tag and push them to ECR. This will allow us to use them in Task Definitions that can be deployed to an ECS cluster. 
+Now that we've tested our images locally, we need to tag and push them to ECR. This will allow us to use them in Task Definitions that can be deployed to an ECS cluster.
 
 You'll need your push commands that you saw during registry creation. You can find them again by going back to the repository (*ECS Console* > *Repositories* > Select the Repository you want to see the commands for > *View Push Commands*).
 
@@ -191,11 +191,11 @@ This should return something like this:
 
 ```
 The push refers to a repository [<account_id>.ecr.us-east-1.amazonaws.com/ecs-lab-web] (len: 1)
-ec59b8b825de: Image already exists 
-5158f10ac216: Image successfully pushed 
-860a4e60cdf8: Image successfully pushed 
-6fb890c93921: Image successfully pushed 
-aa78cde6a49b: Image successfully pushed 
+ec59b8b825de: Image already exists
+5158f10ac216: Image successfully pushed
+860a4e60cdf8: Image successfully pushed
+6fb890c93921: Image successfully pushed
+aa78cde6a49b: Image successfully pushed
 Digest: sha256:fa0601417fff4c3f3e067daa7e533fbed479c95e40ee96a24b3d63b24938cba8
 ```
 
@@ -206,7 +206,7 @@ $ docker tag ecs-lab/api:latest <account_id>.dkr.ecr.us-east-1.amazonaws.com/ecs
 $ docker push <account_id>.dkr.ecr.us-east-1.amazonaws.com/ecs-lab-api:latest
 ```
 
-Note: why `:latest`? This is the actual image tag. In most production environments, you'd tag images for different schemes, for example, you might tag the most up-to-date image with `:latest`, and all other versions of the same container with a commit SHA from a CI job. If you push an image without a specific tag, it will default to `:latest`, and untag the previous image with that tag. For more information on Docker tags, see the Docker https://docs.docker.com/engine/reference/commandline/tag/[documentation]. 
+Note: why `:latest`? This is the actual image tag. In most production environments, you'd tag images for different schemes, for example, you might tag the most up-to-date image with `:latest`, and all other versions of the same container with a commit SHA from a CI job. If you push an image without a specific tag, it will default to `:latest`, and untag the previous image with that tag. For more information on Docker tags, see the Docker https://docs.docker.com/engine/reference/commandline/tag/[documentation].
 
 You can see your pushed images by viewing the repository in the ECS Console. Alternatively, you can use the CLI:
 
@@ -214,11 +214,11 @@ You can see your pushed images by viewing the repository in the ECS Console. Alt
 $ aws ecr list-images --repository-name=ecs-lab-api
 {
     "imageIds": [        {
-            "imageTag": "latest", 
+            "imageTag": "latest",
             "imageDigest": "sha256:f0819d27f73c7fa6329644efe8110644e23c248f2f3a9445cbbb6c84a01e108f"
-        }  
+        }
     ]
 }
 ```
 
-You have successfully completed Lab 1! Keep all the infrastructure you have built running. You will be building on this in Lab 2.
+You have successfully completed Lab 1! Keep all the infrastructure you have built running. You will be building on this in later labs.

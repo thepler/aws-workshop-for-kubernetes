@@ -1,6 +1,4 @@
 FROM alpine:3.9.4
-## Set environmental variable for cluster name
-env EKS_CLUSTER_NAME=<your_cluster_name>
 
 ## Install Dependencies
 RUN apk --update add \
