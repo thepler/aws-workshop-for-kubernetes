@@ -32,7 +32,7 @@ Find the service endpoint to view the application:
 
     kubectl get svc codesuite-demo -o wide
 
-If you copy and paste the "External IP" (actually an ELB DNS name) from the codesuite-demo service into a browser you should see the nginx homepage.
+Updating the deployment will take a minute. If you copy and paste the "External IP" (actually an ELB DNS name) from the codesuite-demo service into a browser you should see the nginx homepage.
 
 === Create the CodePipeline
 
@@ -121,7 +121,7 @@ Once the final Lambda stage is complete you should be able to see the new deploy
 
     kubectl get svc codesuite-demo -o wide
 
-Now if you copy and paste the External IP from the codesuite-demo service into a browser you should see the flask page reflecting the changes you applied. Note that you will need to add "/api" at the end, since that is the path to the API you just deployed.
+Updating the deployment will take a minute. Once it's done, If you copy and paste the "External IP" (actually an ELB DNS name) from the codesuite-demo service into a browser you should see the flask page reflecting the changes you applied. Note that you will need to add "/api" at the end, since that is the path to the API you just deployed.
 
 === Cleaning up the example resources
 
