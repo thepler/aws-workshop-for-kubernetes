@@ -24,6 +24,8 @@ A functioning Kubernetes cluster and config file to authenticate to the cluster,
 
 === Application - initial deployment and service Provisioning
 
+We first deploy a simple nginx container as the first version of our service.
+
     kubectl apply -f ./kube-manifests/deploy-first.yml
 
 Find the service endpoint to view the application:
@@ -36,11 +38,18 @@ If you copy and paste the External IP from the codesuite-demo service into a bro
 
 Note, deploy this stack in the same region as your k8s cluster. Your cluster nodes will require access via an IAM profile to download images from ECR. If you deployed this cluster through KOPS this will be already take care of for you.
 
+You need to specify 2 parameters for the stack (the rest are pre-populated):
+
+ - the name of your EKS cluster
+ - the name of the ECR repository you created in a previous lab for the API container
+
+Also, make sure you specify a unique name for your stack.
+
 |===
 
 |Region | Launch Template for Amazon EKS
 | *N. Virginia* (us-east-1)
-a| image::./deploy-to-aws.png[link=https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=Codesuite-Demo&templateURL=https://s3.amazonaws.com/codesuite-demo-public/eks/aws-refarch-codesuite-kubernetes.yaml]
+a| image::./deploy-to-aws.png[link=https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=MAKE-ME-UNIQUE&templateURL=https://s3.amazonaws.com/cf-templates-16bq2bkk3lpm-us-east-1/ehi-aws-refarch-codesuite-kubernetes.yaml]
 
 |===
 
@@ -54,7 +63,7 @@ instructions.
 
     kubectl -n kube-system edit configmap/aws-auth
 
-2. Add your Lambda execution role to the config
+2. Add your Lambda execution role to the config. The file you will edit will already contain a mapping for worker nodes. DO NOT edit the existing mapping, you need to add the second section below:
 
     # Please edit the object below. Lines beginning with a '#' will be ignored,
     # and an empty file will abort the edit. If an error occurs while saving this file will be
@@ -63,12 +72,13 @@ instructions.
     apiVersion: v1
     data:
       mapRoles: |
-        - rolearn: arn:aws:iam::<AWS Account ID>:role/devel-worker-nodes-NodeInstanceRole-74RF4UBDUKL6
+        - rolearn: arn:aws:iam::205675256514:role/devel-worker-nodes-NodeInstanceRole-74RF4UBDUKL6
           username: system:node:{{EC2PrivateDNSName}}
           groups:
             - system:bootstrappers
             - system:nodes
-        - rolearn: arn:aws:iam::<AWS Account ID>:role/<your lambda execution role>
+        #MAPPING BELOW IS WHAT YOU NEED TO ADD
+        - rolearn: arn:aws:iam::205675256514:role/<your lambda execution role from stack output>
           username: admin
           groups:
             - system:masters
@@ -80,18 +90,18 @@ Install credential helper
     git config --global credential.helper '!aws codecommit credential-helper $@'
     git config --global credential.UseHttpPath true
 
-Clone CodeCommit Repository (url will be in CloudFormation Output), change directories up one level `cd ..` so that both repositories are at the same directory structure.
+Change directories up one level `cd ..` so that both repositories are at the same directory level, then clone CodeCommit Repository (url will be in CloudFormation Output).
 Check the outputs page for your CloudFormation stack:
 
-    git clone <name_of_your_codecommit_repository>
+    git clone <url_of_your_codecommit_repository>
 
-This creates a directory named `codesuite-demo` in your current directory.
+This creates a directory named `<your_unique_stack_name>` in your current directory.
 
-Copy contents from aws-kube-codesuite/sample-app to this repository folder.
+We now want to push a new version of your API to the CodeCommit repository, to get it deployed to your EKS cluster, replacing your initial nginx deployment. Copy contents from aws-microservices-ecs-bootcamp-v2/api to this repository folder.
 
-    cp aws-kube-codesuite/sample-app/* codesuite-demo/
+    rsync -av --exclude=".*" aws-microservices-ecs-bootcamp-v2/api/ <your_repository_directory>
 
-Make a change to the `codesuite-demo/hello.py` file and then change into that directory `cd codesuite-demo`
+Make a change to the response in the `app.py` file and then change into that directory `cd <your_repository_directory>`
 
 Add, commit and push:
 
@@ -109,7 +119,7 @@ Once the final Lambda stage is complete you should be able to see the new deploy
 
     kubectl get svc codesuite-demo -o wide
 
-Now if you copy and paste the External IP from the codesuite-demo service into a browser you should see the flask page reflecting the changes you applied.
+Now if you copy and paste the External IP from the codesuite-demo service into a browser you should see the flask page reflecting the changes you applied. Note that you will need to add "/api" at the end, since that is the path to the API you just deployed.
 
 === Cleaning up the example resources
 
