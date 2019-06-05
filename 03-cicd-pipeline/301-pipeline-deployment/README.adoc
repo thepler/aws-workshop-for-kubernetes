@@ -119,7 +119,7 @@ Once the final Lambda stage is complete you should be able to see the new deploy
 
     kubectl get svc codesuite-demo -o wide
 
-Now if you copy and paste the External IP from the codesuite-demo service into a browser you should see the flask page reflecting the changes you applied.
+Now if you copy and paste the External IP from the codesuite-demo service into a browser you should see the flask page reflecting the changes you applied. Note that you will need to add "/api" at the end, since that is the path to the API you just deployed.
 
 === Cleaning up the example resources
 
