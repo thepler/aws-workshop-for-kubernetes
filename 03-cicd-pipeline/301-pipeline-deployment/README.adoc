@@ -45,7 +45,7 @@ You need to specify 2 parameters for the stack (the rest are pre-populated):
  - the name of your EKS cluster
  - the name of the ECR repository you created in a previous lab for the API container
 
-Also, make sure you specify a unique name for your stack.
+Also, make sure you specify a unique name for your stack and check the 2 acknowledgement boxes at the bottom of the last page, before clicking Create.
 
 |===
 
