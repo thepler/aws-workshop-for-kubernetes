@@ -51,7 +51,7 @@ Also, make sure you specify a unique name for your stack.
 
 |Region | Launch Template for Amazon EKS
 | *N. Virginia* (us-east-1)
-a| <a href="https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=pipeline-YOUR-UNIQUE-NAME&templateURL=https://s3.amazonaws.com/cf-templates-16bq2bkk3lpm-us-east-1/ehi-aws-refarch-codesuite-kubernetes.yaml" target="_blank"><img src="./deploy-to-aws.png"></a>
+a| image::./deploy-to-aws.png[link=https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=pipeline-YOUR-UNIQUE-NAME&templateURL=https://s3.amazonaws.com/cf-templates-16bq2bkk3lpm-us-east-1/ehi-aws-refarch-codesuite-kubernetes.yaml]
 
 |===
 
