@@ -35,7 +35,12 @@ If you copy and paste the External IP from the codesuite-demo service into a bro
 === Deploy the CloudFormation stack
 
 Note, deploy this stack in the same region as your k8s cluster. Your cluster nodes will require access via an IAM profile to download images from ECR. If you deployed this cluster through KOPS this will be already take care of for you.
-As a parameter to the stack (ECRRepoName), pass the name of the ECR repo you created for the API container in a previous lab.
+
+You need to specify 2 parameters for the stack (the rest are pre-populated):
+    - the name of your EKS cluster
+    - the name of the ECR repository you created in a previous lab for the API container
+
+Also, make sure you specify a unique name for your stack.
 
 |===
 
