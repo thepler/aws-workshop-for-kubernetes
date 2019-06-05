@@ -40,8 +40,8 @@ Note, deploy this stack in the same region as your k8s cluster. Your cluster nod
 
 You need to specify 2 parameters for the stack (the rest are pre-populated):
 
-  *the name of your EKS cluster
-  *the name of the ECR repository you created in a previous lab for the API container
+ - the name of your EKS cluster
+ - the name of the ECR repository you created in a previous lab for the API container
 
 Also, make sure you specify a unique name for your stack.
 
