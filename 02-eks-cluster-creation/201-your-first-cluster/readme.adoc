@@ -10,7 +10,7 @@ link:https://aws.amazon.com/eks/[Amazon Elastic Container Service for Kubernetes
 
 Amazon EKS runs the Kubernetes management infrastructure for you across multiple AWS availability zones to eliminate a single point of failure. Amazon EKS is certified Kubernetes conformant so you can use existing tooling and plugins from partners and the Kubernetes community. Applications running on any standard Kubernetes environment are fully compatible and can be easily migrated to Amazon EKS.
 
-If you have not set up the link:../101-start-here[Cloud9 Development Environment, window="_blank"] yet, please do so before continuing.
+If you have not set up the link:../../01-container-basics/101-start-here[Cloud9 Development Environment, window="_blank"] yet, please do so before continuing.
 
 In order to complete the exercises in the workshop, you'll need the proper IAM permissions set.
 
@@ -30,6 +30,8 @@ docker build -t utilities aws-workshop-for-kubernetes/01-container-basics/101-st
 ```
 
 Run the Utilities image
+
+**NOTE:  Replace <your_cluster_name> with a unique name**
 ```
 docker run -it \
     -v ~/.aws/:/root/.aws \
