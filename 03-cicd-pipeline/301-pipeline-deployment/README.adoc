@@ -57,9 +57,11 @@ a| image::./deploy-to-aws.png[link=https://console.aws.amazon.com/cloudformation
 
 Since you are deploying this architecture to an Amazon EKS cluster, you need to give the Lambda
 execution role permissions in the Amazon EKS cluster. You can get the ARN of your Lambda execution role
-from the Outputs tab in the nested CloudFormation template *pipeline-<your_unique_name>-Pipeline-<random_string>*. Refer to this 
+from the Outputs tab of your CloudFormation stack *pipeline-<your_unique_name>*. Refer to this 
 link:https://docs.aws.amazon.com/eks/latest/userguide/add-user-role.html[User Guide] for detailed
 instructions.
+
+TIP: you can filter stacks by typing in your unique name in the search box
 
 1. Edit the `aws-auth` ConfigMap of your cluster.
 
@@ -92,20 +94,20 @@ Install credential helper - this will let you access the CodeCommit repo created
     git config --global credential.helper '!aws codecommit credential-helper $@'
     git config --global credential.UseHttpPath true
 
-Change directories up one level `cd ..` so that both repositories are at the same directory level, then clone the CodeCommit Repository (url will be in the output of the nested CloudFormation template *pipeline-<your_unique_name>-Pipeline-<random_string>*).
-Check the outputs page for your CloudFormation stack:
+Change directories up one level `cd ..` (this should get you to ~/environment) so that both repositories are at the same directory level, then clone the CodeCommit Repository (url will be in the output of your CloudFormation stack *pipeline-<your_unique_name>*).
+Check the Outputs tab for your CloudFormation stack, then:
 
     git clone <url_of_your_codecommit_repository>
 
-This creates a directory named `pipeline-<your_unique_name>` in your current directory.
+This creates a repository directory named `pipeline-<your_unique_name>` in your current directory.
 
-We now want to push a new version of your API to the CodeCommit repository, to get it deployed to your EKS cluster, replacing your initial nginx deployment. Copy contents from aws-microservices-ecs-bootcamp-v2/api to this repository folder.
+We now want to push a new version of your API to the CodeCommit repository, to get it deployed to your EKS cluster, replacing your initial nginx deployment. Copy contents from aws-microservices-ecs-bootcamp-v2/api to this repository directory.
 
     rsync -av --exclude=".*" aws-microservices-ecs-bootcamp-v2/api/ <your_repository_directory>
 
-Make a change to the response in the `app.py` file and then change into that directory `cd <your_repository_directory>`
+Change into the repository directory `cd <your_repository_directory>` and make a change to the response in the `app.py` file.
 
-Add, commit and push:
+Now, add, commit and push:
 
     git add . && git commit -m "test CodeSuite" && git push origin master
 
