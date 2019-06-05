@@ -12,44 +12,16 @@ Amazon EKS runs the Kubernetes management infrastructure for you across multiple
 
 If you have not set up the link:../../01-container-basics/101-start-here[Cloud9 Development Environment, window="_blank"] yet, please do so before continuing.
 
-In order to complete the exercises in the workshop, you'll need the proper IAM permissions set.
-
-== Build the "Utilities" container image
-We have provided a "Utilities" Dockerfile which can be built that includes all
-the tools you need to complete this workshop:
-
-- kubectl _(the Kubernetes CLI)_
-- heptio/authenticator _(for authentication to the EKS cluster)_
-- AWS CLI
-- sets appropriate environmental variables
-- clones the workshop git repo into the container image
-
-Build the Utilities image
-```
-docker build -t utilities aws-workshop-for-kubernetes/01-container-basics/101-start-here/utilities/
-```
-
-Run the Utilities image
-
-**NOTE:  Replace <your_cluster_name> with a unique name**
-```
-docker run -it \
-    -v ~/.aws/:/root/.aws \
-    -v ~/.kube/:/root/.kube \
-    -v ~/environment/aws-workshop-for-kubernetes:/aws-workshop-for-kubernetes
-    -e EKS_CLUSTER_NAME=<your_cluster_name>
-    utilities
-```
-
 == Create a Kubernetes Cluster with EKS
 
 EKS can be used to create a highly available cluster, with multiple master nodes spread across multiple availability zones.
 
 === Create the master nodes
+First set the EKS_CLUSTER_NAME environmental variable.  Make sure to provide a unique name.
 
-Create a Kubernetes cluster using the following command. Run it in the "bash" terminal tab at the bottom of the Cloud9 IDE. This will create a cluster with master nodes:
+    $ export EKS_CLUSTER_NAME=<your_unique_cluster_name>
 
-Make sure to change the name of your cluster to something unique!
+Create a Kubernetes cluster using the following command. Run it in the terminal tab at the bottom of the Cloud9 IDE. This will create a cluster with master nodes:
 
     $ aws eks create-cluster \
       --name ${EKS_CLUSTER_NAME} \
@@ -57,7 +29,7 @@ Make sure to change the name of your cluster to something unique!
       --resources-vpc-config subnetIds=${EKS_SUBNET_IDS},securityGroupIds=${EKS_SECURITY_GROUPS} \
       --kubernetes-version 1.12
 
-The `EKS_SERVICE_ROLE`, `EKS_SUBNET_IDS`, and `EKS_SECURITY_GROUPS` environment variables should have been set during the link:../101-start-here[Cloud9 Environment Setup].
+The `EKS_SERVICE_ROLE`, `EKS_SUBNET_IDS`, and `EKS_SECURITY_GROUPS` environment variables should have been set during the link:../../01-container-basics/101-start-here[Cloud9 Environment Setup].
 
 Cluster provisioning usually takes less than 10 minutes. You can query the status of your cluster with the following command. When your cluster status is `ACTIVE`, you can proceed.
 
@@ -69,6 +41,7 @@ aws: error: argument --role-arn: expected one argument
 ```
 Please confirm the following environment variables are set before executing the 'create cluster' command:
 ```
+echo $EKS_CLUSTER_NAME
 echo $EKS_SERVICE_ROLE
 echo $EKS_SUBNET_IDS
 echo $EKS_SECURITY_GROUPS
@@ -149,7 +122,11 @@ First, create an SSH key pair for use with your nodes
     $ ssh-keygen -t rsa -N "" -f ~/.ssh/id_rsa
     $ aws ec2 create-key-pair --key-name ${EKS_NODE_STACK_NAME} --query 'KeyMaterial' --output text > $HOME/.ssh/k8s-workshop.pem
 
-To launch your worker nodes, run the following CloudFormation CLI command:
+To launch your worker nodes, first set the EKS_NODE_STACK_NAME environmental variable.  Make sure the stack name is unique.
+
+    $ EKS_NODE_STACK_NAME=<your_unique_stack_name>
+
+Then run the following CloudFormation CLI command:
 
     $ aws cloudformation create-stack \
       --stack-name ${EKS_NODE_STACK_NAME} \
@@ -163,7 +140,7 @@ To launch your worker nodes, run the following CloudFormation CLI command:
                      {\"ParameterKey\": \"VpcId\", \"ParameterValue\": \"${EKS_VPC_ID}\"},
                      {\"ParameterKey\": \"Subnets\", \"ParameterValue\": \"${EKS_SUBNET_IDS}\"}]"
 
-The `AWS_STACK_NAME`, `EKS_WORKER_AMI`, `EKS_VPC_ID`, `EKS_SUBNET_IDS`, and `EKS_SECURITY_GROUPS` environment variables should have been set during the link:../101-start-here[Cloud9 Environment Setup].
+The `EKS_WORKER_AMI`, `EKS_VPC_ID`, `EKS_SUBNET_IDS`, and `EKS_SECURITY_GROUPS` environment variables should have been set during the build.
 
 Node provisioning usually takes less than 5 minutes. You can query the status of your cluster with the following command. When your cluster status is `CREATE_COMPLETE`, you can proceed.
 

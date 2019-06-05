@@ -42,11 +42,23 @@ The Cloud9 IDE needs to use the assigned IAM Instance profile. Open the "AWS Clo
 
 image:cloud9-disable-temp-credentials.png[]
 
-=== Cloud9 Instance Setup
+=== Build Script
 
-Once your Cloud9 is ready, clone this repo down to your Cloud9 environment.
+Once your Cloud9 is ready, download the build script and install in your IDE. This will prepare your IDE for running tutorials in this workshop. The build script installs the following:
 
-`git clone https://github.com/dewjam/aws-workshop-for-kubernetes.git`
+- jq
+- kubectl _(the Kubernetes CLI, which we'll cover in great detail later in the workshop)_
+- heptio/authenticator _(for authentication to the EKS cluster)_
+- updates/configures the AWS CLI and stores necessary environment variables in bash_profile
+- kops _(Kubernetes Operations, which we'll also cover in detail later)_
+- creates an SSH key
+- clone the workshop repository into Cloud9
+
+To install the script, run this command in the "bash" terminal tab of the Cloud9 IDE:
+
+    aws s3 cp s3://205675256514-eks-immersion-day/lab-ide-build.sh . && \
+    chmod +x lab-ide-build.sh && \
+    . ./lab-ide-build.sh
 
 At this point you, you should be presented with a "$" prompt.  You are now ready
 to continue on with the workshop!
