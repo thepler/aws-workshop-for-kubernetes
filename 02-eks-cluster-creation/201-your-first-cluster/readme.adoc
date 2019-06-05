@@ -35,67 +35,6 @@ Cluster provisioning usually takes less than 10 minutes. You can query the statu
 
     $ watch "aws eks describe-cluster --name ${EKS_CLUSTER_NAME} --query cluster.status --output text"
 
-Note: If your 'create cluster' fails with an error like:
-```
-aws: error: argument --role-arn: expected one argument
-```
-Please confirm the following environment variables are set before executing the 'create cluster' command:
-```
-echo $EKS_CLUSTER_NAME
-echo $EKS_SERVICE_ROLE
-echo $EKS_SUBNET_IDS
-echo $EKS_SECURITY_GROUPS
-```
-If any of those environment variables are blank, please re-run the "Build Script" section of the link:../101-start-here[Cloud9 Environment Setup].
-
-If you receive an *UnsupportedAvailabilityZoneException* error during EKS cluster creation, your account is using an AZ that is currently resource constrained. This occurs mostly in N.Virginia region (us-east-1).
-
-```
-An error occurred (UnsupportedAvailabilityZoneException) when calling the CreateCluster operation: Cannot create cluster 'k8s-workshop' because us-east-1c,
-the targeted availability zone, does not currently have sufficient capacity to support the cluster. Retry and choose from these availability zones: us-east-1a, us-east-1b, us-east-1d
-```
-
-If you receive this error, you need to remove the constrained AZ (us-east-1c in this example) from *`EKS_SUBNET_IDS`* environment variable. Follow these steps to update your environment variable.
-
-Save the EKS recommended AZ's that is referred in your CLI output in an environment variable.
-Note: you only need two AZ's defined to create EKS cluster
-
-    $ export EKS_VALID_AZS=us-east-1a,us-east-1b
-
-Run the command below to determine subnet ID's
-
-    $ aws ec2 describe-subnets --filters "Name=vpc-id,Values=$EKS_VPC_ID" "Name=availabilityZone,Values=$EKS_VALID_AZS" --query 'Subnets[*].[SubnetId]' --output text
-    subnet-6e672524
-    subnet-18b10e44
-
-Save this output as `*EKS_SUBNET_IDS*` environment variable
-
-    $ export EKS_SUBNET_IDS=subnet-6e672524,subnet-18b10e44
-
-Re-run EKS create-cluster and you should now be able to create cluster. The output should look similar to this
-
-    {
-    "cluster": {
-        "status": "CREATING",
-        "name": "k8s-workshop",
-        "certificateAuthority": {},
-        "roleArn": "arn:aws:iam::123456789012:role/k8s-workshop-EksServiceRo-AWSServiceRoleForAmazonE-1PCSJFFFAF4BL",
-        "resourcesVpcConfig": {
-            "subnetIds": [
-                "subnet-6e672524",
-                "subnet-18b10e44"
-            ],
-            "vpcId": "vpc-a779b4dd",
-            "securityGroupIds": [
-                "sg-d093de9a"
-            ]
-        },
-        "version": "1.10",
-        "arn": "arn:aws:eks:us-east-1:123456789012:cluster/k8s-workshop",
-        "createdAt": 1532734869.147
-    }
-    }
-
 === Create the configuration file
 
 In order to access the cluster, you must create a Kubectl configuration file (sometimes referred to as a `kubeconfig` file).
@@ -117,16 +56,16 @@ You can test your kubectl configuration using 'kubectl get service'
 
 Now that your EKS master nodes are created, you can launch and configure your worker nodes.
 
-First, create an SSH key pair for use with your nodes
+First, set the EKS_NODE_STACK_NAME environmental variable.  Make sure the stack name is unique.
+
+    $ EKS_NODE_STACK_NAME=<your_unique_stack_name>
+
+Next, create an SSH key pair for use with your nodes
 
     $ ssh-keygen -t rsa -N "" -f ~/.ssh/id_rsa
     $ aws ec2 create-key-pair --key-name ${EKS_NODE_STACK_NAME} --query 'KeyMaterial' --output text > $HOME/.ssh/k8s-workshop.pem
 
-To launch your worker nodes, first set the EKS_NODE_STACK_NAME environmental variable.  Make sure the stack name is unique.
-
-    $ EKS_NODE_STACK_NAME=<your_unique_stack_name>
-
-Then run the following CloudFormation CLI command:
+Then launch your worker nodes by running the following CloudFormation CLI command:
 
     $ aws cloudformation create-stack \
       --stack-name ${EKS_NODE_STACK_NAME} \
