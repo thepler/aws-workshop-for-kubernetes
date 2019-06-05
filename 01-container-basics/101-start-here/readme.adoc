@@ -21,7 +21,7 @@ Click on the "Deploy to AWS" button and follow the CloudFormation prompts to beg
 
 |Region | Launch template with an existing VPC
 | *N. Virginia* (us-east-1)
-a| image::./deploy-to-aws.png[link=https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=cloud9-<username>&templateURL=https://205675256514-cfn-templates.s3.amazonaws.com/cloud9.json]
+a| image::./deploy-to-aws.png[link=https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=cloud9-USERNAME&templateURL=https://205675256514-cfn-templates.s3.amazonaws.com/cloud9.json]
 |===
 
 Provide a *unique stack name* and Click *Next*. You can give Tags such as Key=Name, Value=k8s-workshop, and click *Next*. Make sure
