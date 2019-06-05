@@ -35,12 +35,13 @@ If you copy and paste the External IP from the codesuite-demo service into a bro
 === Deploy the CloudFormation stack
 
 Note, deploy this stack in the same region as your k8s cluster. Your cluster nodes will require access via an IAM profile to download images from ECR. If you deployed this cluster through KOPS this will be already take care of for you.
+As a parameter to the stack (ECRRepoName), pass the name of the ECR repo you created for the API container in a previous lab.
 
 |===
 
 |Region | Launch Template for Amazon EKS
 | *N. Virginia* (us-east-1)
-a| image::./deploy-to-aws.png[link=https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=Codesuite-Demo&templateURL=https://s3.amazonaws.com/codesuite-demo-public/eks/aws-refarch-codesuite-kubernetes.yaml]
+a| image::./deploy-to-aws.png[link=https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=MAKE-ME-UNIQUE&templateURL=https://s3.amazonaws.com/cf-templates-16bq2bkk3lpm-us-east-1/ehi-aws-refarch-codesuite-kubernetes.yaml]
 
 |===
 
@@ -54,7 +55,7 @@ instructions.
 
     kubectl -n kube-system edit configmap/aws-auth
 
-2. Add your Lambda execution role to the config
+2. Add your Lambda execution role to the config. DO NOT edit the existing entry for worker nodes, you need to add the second section below:
 
     # Please edit the object below. Lines beginning with a '#' will be ignored,
     # and an empty file will abort the edit. If an error occurs while saving this file will be
@@ -63,12 +64,13 @@ instructions.
     apiVersion: v1
     data:
       mapRoles: |
-        - rolearn: arn:aws:iam::<AWS Account ID>:role/devel-worker-nodes-NodeInstanceRole-74RF4UBDUKL6
+        - rolearn: arn:aws:iam::205675256514:role/devel-worker-nodes-NodeInstanceRole-74RF4UBDUKL6
           username: system:node:{{EC2PrivateDNSName}}
           groups:
             - system:bootstrappers
             - system:nodes
-        - rolearn: arn:aws:iam::<AWS Account ID>:role/<your lambda execution role>
+        #ADD MAPPING BELOW
+        - rolearn: arn:aws:iam::205675256514:role/<your lambda execution role>
           username: admin
           groups:
             - system:masters
@@ -85,13 +87,13 @@ Check the outputs page for your CloudFormation stack:
 
     git clone <name_of_your_codecommit_repository>
 
-This creates a directory named `codesuite-demo` in your current directory.
+This creates a directory named `<your_unique_stack_name>` in your current directory.
 
-Copy contents from aws-kube-codesuite/sample-app to this repository folder.
+Copy contents from aws-microservices-ecs-bootcamp-v2/api to this repository folder.
 
-    cp aws-kube-codesuite/sample-app/* codesuite-demo/
+    rsync -av --exclude=".*" aws-microservices-ecs-bootcamp-v2/api/ <your_repository_directory>
 
-Make a change to the `codesuite-demo/hello.py` file and then change into that directory `cd codesuite-demo`
+Make a change to the response in the `app.py` file and then change into that directory `cd <your_repository_directory>`
 
 Add, commit and push:
 
