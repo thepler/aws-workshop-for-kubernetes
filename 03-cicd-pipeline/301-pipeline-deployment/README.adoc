@@ -26,17 +26,19 @@ A functioning Kubernetes cluster and config file to authenticate to the cluster,
 
 We first deploy a simple nginx container as the first version of our service.
 
-    kubectl apply -f ./kube-manifests/deploy-first.yml
+    kubectl apply -f aws-workshop-for-kubernetes/03-cicd-pipeline/301-pipeline-deployment/kube-manifests/deploy-first.yml
 
 Find the service endpoint to view the application:
 
     kubectl get svc codesuite-demo -o wide
 
-If you copy and paste the External IP from the codesuite-demo service into a browser you should see the nginx homepage.
+If you copy and paste the "External IP" (actually an ELB DNS name) from the codesuite-demo service into a browser you should see the nginx homepage.
 
-=== Deploy the CloudFormation stack
+=== Create the CodePipeline
 
-Note, deploy this stack in the same region as your k8s cluster. Your cluster nodes will require access via an IAM profile to download images from ECR. If you deployed this cluster through KOPS this will be already take care of for you.
+We now use a CloudFormation template to deploy the pipeline, along with its components (CodeCommit repository, CodeBuild project, Deployment step via Lambda). The pipeline will build a container and push the image to the ECR repo created in a previous lab.
+
+Note, deploy this stack in the same region as your k8s cluster. Your cluster nodes will require access via an IAM profile to download images from ECR.
 
 You need to specify 2 parameters for the stack (the rest are pre-populated):
 
@@ -49,13 +51,13 @@ Also, make sure you specify a unique name for your stack.
 
 |Region | Launch Template for Amazon EKS
 | *N. Virginia* (us-east-1)
-a| image::./deploy-to-aws.png[link=https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=MAKE-ME-UNIQUE&templateURL=https://s3.amazonaws.com/cf-templates-16bq2bkk3lpm-us-east-1/ehi-aws-refarch-codesuite-kubernetes.yaml]
+a| image::./deploy-to-aws.png[link=https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=pipeline-YOUR-UNIQUE-NAME&templateURL=https://s3.amazonaws.com/cf-templates-16bq2bkk3lpm-us-east-1/ehi-aws-refarch-codesuite-kubernetes.yaml]
 
 |===
 
-If you are deploying this architecture to an Amazon EKS cluster, you would need to give the Lambda
-execution role permissions in Amazon EKS cluster. You can get the ARN of your Lambda execution role
-from the Outputs tab in the CloudFormation template. Refer to this 
+Since you are deploying this architecture to an Amazon EKS cluster, you need to give the Lambda
+execution role permissions in the Amazon EKS cluster. You can get the ARN of your Lambda execution role
+from the Outputs tab in the nested CloudFormation template *pipeline-<your_unique_name>-Pipeline-<random_string>*. Refer to this 
 link:https://docs.aws.amazon.com/eks/latest/userguide/add-user-role.html[User Guide] for detailed
 instructions.
 
@@ -85,17 +87,17 @@ instructions.
 
 === Test CI/CD platform
 
-Install credential helper
+Install credential helper - this will let you access the CodeCommit repo created as part of the pipeline.
 
     git config --global credential.helper '!aws codecommit credential-helper $@'
     git config --global credential.UseHttpPath true
 
-Change directories up one level `cd ..` so that both repositories are at the same directory level, then clone CodeCommit Repository (url will be in CloudFormation Output).
+Change directories up one level `cd ..` so that both repositories are at the same directory level, then clone the CodeCommit Repository (url will be in the output of the nested CloudFormation template *pipeline-<your_unique_name>-Pipeline-<random_string>*).
 Check the outputs page for your CloudFormation stack:
 
     git clone <url_of_your_codecommit_repository>
 
-This creates a directory named `<your_unique_stack_name>` in your current directory.
+This creates a directory named `pipeline-<your_unique_name>` in your current directory.
 
 We now want to push a new version of your API to the CodeCommit repository, to get it deployed to your EKS cluster, replacing your initial nginx deployment. Copy contents from aws-microservices-ecs-bootcamp-v2/api to this repository folder.
 
