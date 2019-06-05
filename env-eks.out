@@ -1,0 +1,7 @@
+EKS_CLUSTER_NAME=thepler-cluster-mcclusterface
+EKS_NODE_STACK_NAME=thepler-stack-mcstackface
+EKS_SECURITY_GROUPS=sg-0d1fab3d781baa4c9
+EKS_SERVICE_ROLE=arn:aws:iam::205675256514:role/eksServiceRole
+EKS_SUBNET_IDS=subnet-0dffc3dd9d919ff73,subnet-03cc08e37813e7bb2,subnet-0db379a8f009f1549
+EKS_VPC_ID=vpc-087ad0eaac5144e97
+EKS_WORKER_AMI=ami-0abcb9f9190e867ab
