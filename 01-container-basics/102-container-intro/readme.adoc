@@ -24,8 +24,8 @@ Server Version: 18.06.1-ce
 At this point, we're going to pretend that we're the developers of both the `web` and `api` microservices, and we will get the latest from our source repo. In this case we will just be using the plain old `curl`, but just pretend you're using `git`:
 
 ```
-$ curl -O https://s3-us-west-2.amazonaws.com/apn-bootcamps/microservice-ecs-2017/ecs-lab-code-20170524.tar.gz
-$ tar -xvf ecs-lab-code-20170524.tar.gz
+$ curl -O http://205675256514-eks-immersion-day.s3-website-us-east-1.amazonaws.com/ecs-lab-code.tar.gz
+$ tar -xvf ecs-lab-code.tar.gz
 ```
 
 Our first step is to build and test our containers locally. If you've never worked with Docker before, there are a few basic commands that we'll use in this workshop, but you can find a more thorough list in the Docker https://docs.docker.com/get-started/[Getting Started] documentation.
@@ -110,9 +110,9 @@ Repeat the same steps with the api microservice. Change directory to `/api` and 
 $ cd /home/ec2-user/environment/aws-microservices-ecs-bootcamp-v2/api
 $ docker build -t ecs-lab/api .
 $ docker images (should see the api image now)
-$ docker run -d -p 8000:8000 ecs-lab/api
+$ docker run -d -p 80:80 ecs-lab/api
 $ docker ps (should see both containers running)
-$ curl localhost:8000/api
+$ curl localhost:80/api
 ```
 
 The API container should return:
@@ -174,13 +174,13 @@ Your shell will execute the output of that command and respond:
 Login Succeeded
 ```
 
-== Pushing our testing images to ECR
+== Pushing our tested images to ECR
 
 Now that we've tested our images locally, we need to tag and push them to ECR. This will allow us to use them in Task Definitions that can be deployed to an ECS cluster. 
 
 You'll need your push commands that you saw during registry creation. You can find them again by going back to the repository (*ECS Console* > *Repositories* > Select the Repository you want to see the commands for > *View Push Commands*).
 
-To tag and push to the web repository (if you’re using a shared account, use your name in the tag: `NAME-ecs-lab:latest`):
+To tag and push to the web repository:
 
 ```
 $ docker tag ecs-lab/web:latest <account_id>.dkr.ecr.us-east-1.amazonaws.com/ecs-lab-web:latest
