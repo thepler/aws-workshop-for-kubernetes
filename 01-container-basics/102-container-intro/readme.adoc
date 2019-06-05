@@ -222,3 +222,4 @@ $ aws ecr list-images --repository-name=ecs-lab-api
 ```
 
 You have successfully completed Lab 1! Keep all the infrastructure you have built running. You will be building on this in later labs.
+The next step is link:../../02-eks-cluster-creation/201-your-first-cluster[to continue to the EKS lab].
