@@ -21,10 +21,10 @@ Server Version: 18.06.1-ce
 ```
 
 == Preparing the Docker Images
-At this point, we're going to pretend that we're the developers of both the `web` and `api` microservices, and we will get the latest from our source repo. In this case we will just be using the plain old `curl`, but just pretend you're using `git`:
+At this point, we're going to pretend that we're the developers of both the `web` and `api` microservices, and we will get the latest from our source repo. In this case we will just be using the AWS CLI, but just pretend you're using `git`:
 
 ```
-$ curl -O http://205675256514-eks-immersion-day.s3-website-us-east-1.amazonaws.com/ecs-lab-code.tar.gz
+$ aws s3 cp s3://205675256514-eks-immersion-day/ecs-lab-code.tar.gz .
 $ tar -xvf ecs-lab-code.tar.gz
 ```
 
