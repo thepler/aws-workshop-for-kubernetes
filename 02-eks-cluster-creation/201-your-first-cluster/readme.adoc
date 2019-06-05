@@ -12,11 +12,9 @@ Amazon EKS runs the Kubernetes management infrastructure for you across multiple
 
 If you have not set up the link:../101-start-here[Cloud9 Development Environment, window="_blank"] yet, please do so before continuing.
 
-== Permissions
-
 In order to complete the exercises in the workshop, you'll need the proper IAM permissions set.
 
-=== Build the `Utilities` container image
+== Build the "Utilities" container image
 We have provided a "Utilities" Dockerfile which can be built that includes all
 the tools you need to complete this workshop:
 
