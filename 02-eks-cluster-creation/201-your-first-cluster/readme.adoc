@@ -62,9 +62,9 @@ First, set the `EKS_NODE_STACK_NAME` environmental variable.  Make sure the stac
 
 Next, create an SSH key pair for use with your nodes
 
-    $ ssh-keygen -t rsa -N "" -f ~/.ssh/id_rsa
-    $ aws ec2 create-key-pair --key-name ${EKS_NODE_STACK_NAME} --query 'KeyMaterial' --output text > $HOME/.ssh/k8s-workshop.pem
-    $ chmod 0400 $HOME/.ssh/k8s-workshop.pem
+    $ ssh-keygen -t rsa -N "" -f ~/.ssh/id_rsa && \
+    aws ec2 create-key-pair --key-name ${EKS_NODE_STACK_NAME} --query 'KeyMaterial' --output text > $HOME/.ssh/k8s-workshop.pem && /
+    chmod 0400 $HOME/.ssh/k8s-workshop.pem
 
 Then launch your worker nodes by running the following CloudFormation CLI command:
 
@@ -109,7 +109,7 @@ Node provisioning usually takes less than 5 minutes. You can query the status of
 === Enable worker nodes to join cluster
 
 To enable worker nodes to join your cluster, you must apply a ConfigMap to your cluster including the ARN for the IAM role assigned to
-the worker nodes.  Under the `aws-workshop-for-kubernetes/02-eks-cluster-creation/201-your-first-cluster/templates/` folder, open the `aws-auth-cm.yaml` file with
+the worker nodes.  Under the `~/environment/aws-workshop-for-kubernetes/02-eks-cluster-creation/201-your-first-cluster/templates/` folder, open the `aws-auth-cm.yaml` file with
 the Cloud9 file editor. Then update the `rolearn` field so it matches the ARN recorded in the previous step.
 
 ```
@@ -129,7 +129,7 @@ data:
 
 Next, apply this ConfigMap using the Kubectl command
 
-    $ kubectl apply -f aws-workshop-for-kubernetes/02-eks-cluster-creation/201-your-first-cluster/templates/aws-auth-cm.yaml
+    $ kubectl apply -f ~/environment/aws-workshop-for-kubernetes/02-eks-cluster-creation/201-your-first-cluster/templates/aws-auth-cm.yaml
 
 Watch the status of your nodes and wait for them to reach the `Ready` status.
 

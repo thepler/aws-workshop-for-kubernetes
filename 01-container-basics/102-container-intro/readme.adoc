@@ -183,8 +183,8 @@ You'll need your push commands that you saw during registry creation. You can fi
 To tag and push to the web repository:
 
 ```
-$ docker tag ecs-lab/web:latest <account_id>.dkr.ecr.us-east-1.amazonaws.com/ecs-lab-web:latest
-$ docker push <account_id>.dkr.ecr.us-east-1.amazonaws.com/ecs-lab-web:latest
+$ docker tag ecs-lab/web:latest <account_id>.dkr.ecr.us-east-1.amazonaws.com/ecs-lab-web-USERNAME:latest
+$ docker push <account_id>.dkr.ecr.us-east-1.amazonaws.com/ecs-lab-web-USERNAME:latest
 ```
 
 This should return something like this:
@@ -202,8 +202,8 @@ Digest: sha256:fa0601417fff4c3f3e067daa7e533fbed479c95e40ee96a24b3d63b24938cba8
 To tag and push to the api repository:
 
 ```
-$ docker tag ecs-lab/api:latest <account_id>.dkr.ecr.us-east-1.amazonaws.com/ecs-lab-api:latest
-$ docker push <account_id>.dkr.ecr.us-east-1.amazonaws.com/ecs-lab-api:latest
+$ docker tag ecs-lab/api:latest <account_id>.dkr.ecr.us-east-1.amazonaws.com/ecs-lab-api-USERNAME:latest
+$ docker push <account_id>.dkr.ecr.us-east-1.amazonaws.com/ecs-lab-api-USERNAME:latest
 ```
 
 Note: why `:latest`? This is the actual image tag. In most production environments, you'd tag images for different schemes, for example, you might tag the most up-to-date image with `:latest`, and all other versions of the same container with a commit SHA from a CI job. If you push an image without a specific tag, it will default to `:latest`, and untag the previous image with that tag. For more information on Docker tags, see the Docker https://docs.docker.com/engine/reference/commandline/tag/[documentation].
@@ -211,7 +211,7 @@ Note: why `:latest`? This is the actual image tag. In most production environmen
 You can see your pushed images by viewing the repository in the ECS Console. Alternatively, you can use the CLI:
 
 ```
-$ aws ecr list-images --repository-name=ecs-lab-api
+$ aws ecr list-images --repository-name=ecs-lab-api-USERNAME
 {
     "imageIds": [        {
             "imageTag": "latest",
