@@ -24,6 +24,8 @@ A functioning Kubernetes cluster and config file to authenticate to the cluster,
 
 === Application - initial deployment and service Provisioning
 
+We first deploy a simple nginx container as the first version of our service.
+
     kubectl apply -f ./kube-manifests/deploy-first.yml
 
 Find the service endpoint to view the application:
@@ -61,7 +63,7 @@ instructions.
 
     kubectl -n kube-system edit configmap/aws-auth
 
-2. Add your Lambda execution role to the config. DO NOT edit the existing entry for worker nodes, you need to add the second section below:
+2. Add your Lambda execution role to the config. The file you will edit will already contain a mapping for worker nodes. DO NOT edit the existing mapping, you need to add the second section below:
 
     # Please edit the object below. Lines beginning with a '#' will be ignored,
     # and an empty file will abort the edit. If an error occurs while saving this file will be
@@ -75,8 +77,8 @@ instructions.
           groups:
             - system:bootstrappers
             - system:nodes
-        #ADD MAPPING BELOW
-        - rolearn: arn:aws:iam::205675256514:role/<your lambda execution role>
+        #MAPPING BELOW IS WHAT YOU NEED TO ADD
+        - rolearn: arn:aws:iam::205675256514:role/<your lambda execution role from stack output>
           username: admin
           groups:
             - system:masters
@@ -88,14 +90,14 @@ Install credential helper
     git config --global credential.helper '!aws codecommit credential-helper $@'
     git config --global credential.UseHttpPath true
 
-Clone CodeCommit Repository (url will be in CloudFormation Output), change directories up one level `cd ..` so that both repositories are at the same directory structure.
+Change directories up one level `cd ..` so that both repositories are at the same directory level, then clone CodeCommit Repository (url will be in CloudFormation Output).
 Check the outputs page for your CloudFormation stack:
 
-    git clone <name_of_your_codecommit_repository>
+    git clone <url_of_your_codecommit_repository>
 
 This creates a directory named `<your_unique_stack_name>` in your current directory.
 
-Copy contents from aws-microservices-ecs-bootcamp-v2/api to this repository folder.
+We now want to push a new version of your API to the CodeCommit repository, to get it deployed to your EKS cluster, replacing your initial nginx deployment. Copy contents from aws-microservices-ecs-bootcamp-v2/api to this repository folder.
 
     rsync -av --exclude=".*" aws-microservices-ecs-bootcamp-v2/api/ <your_repository_directory>
 
