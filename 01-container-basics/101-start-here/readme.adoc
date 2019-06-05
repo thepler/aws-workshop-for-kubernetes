@@ -1,4 +1,4 @@
-= Kubernetes - Setup Cloud9 Development Environment
+= Setup Cloud9 Development Environment
 :toc:
 :icons:
 :linkattrs:
