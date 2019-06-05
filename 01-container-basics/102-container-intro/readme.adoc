@@ -25,7 +25,6 @@ At this point, we're going to pretend that we're the developers of both the `web
 
 ```
 $ curl -O https://s3-us-west-2.amazonaws.com/apn-bootcamps/microservice-ecs-2017/ecs-lab-code-20170524.tar.gz
-
 $ tar -xvf ecs-lab-code-20170524.tar.gz
 ```
 
@@ -122,7 +121,7 @@ The API container should return:
 { "response" : "hi!  i'm ALSO served via Python + Flask.  i'm an API." }
 ```
 
-Congradulations, you now have two working microservice containers!
+Congratulations, you now have two working microservice containers!
 
 == Creating a container registry with ECR
 
@@ -130,11 +129,17 @@ Once images are built, it’s useful to share them and this is done by pushing t
 
 Navigate to the ECS console and Select ECR from AWS Services.
 
+image:102_ecr_nav.png[]
+
 Navigate to *Repositories* and choose *Create repository*.
 
-Name your first repository *eks-lab-web-USERNAME* (replace USERNAME with a unique ID).
+image:102_repositories.png[]
 
-Once you've created the `eks-lab-web-USERNAME` repository, repeat the process for the `eks-lab-api-USERNAME` repository. Take note of the push commands for this second repository. Push commands are unique per repository.
+Name your first repository *ecs-lab-web-USERNAME* (replace USERNAME with a unique ID).
+
+image:102_name_repo.png[]
+
+Once you've created the `ecs-lab-web-USERNAME` repository, repeat the process for the `ecs-lab-api-USERNAME` repository. Take note of the push commands for this second repository. Push commands are unique per repository.
 
 Once you've created the repository, select it and then click View Push Commands.
 
@@ -146,11 +151,11 @@ Now that we've tested our images locally, we need to tag and push them to ECR. T
 
 You'll need your push commands that you saw during registry creation. You can find them again by going back to the repository (*ECS Console* > *Repositories* > Select the Repository you want to see the commands for > *View Push Commands*).
 
-To tag and push to the web repository (if you’re using a shared account, use your name in the tag: `NAME-eks-lab:latest`):
+To tag and push to the web repository (if you’re using a shared account, use your name in the tag: `NAME-ecs-lab:latest`):
 
 ```
-$ docker tag eks-lab/web:latest <account_id>.dkr.ecr.us-east-1.amazonaws.com/eks-lab-web:latest
-$ docker push <account_id>.dkr.ecr.us-east-1.amazonaws.com/eks-lab-web:latest
+$ docker tag ecs-lab/web:latest <account_id>.dkr.ecr.us-east-1.amazonaws.com/ecs-lab-web:latest
+$ docker push <account_id>.dkr.ecr.us-east-1.amazonaws.com/ecs-lab-web:latest
 ```
 
 This should return something like this:
@@ -168,8 +173,8 @@ Digest: sha256:fa0601417fff4c3f3e067daa7e533fbed479c95e40ee96a24b3d63b24938cba8
 To tag and push to the api repository:
 
 ```
-$ docker tag eks-lab/api:latest <account_id>.dkr.ecr.us-east-1.amazonaws.com/eks-lab-api:latest
-$ docker push <account_id>.dkr.ecr.us-east-1.amazonaws.com/eks-lab-api:latest
+$ docker tag ecs-lab/api:latest <account_id>.dkr.ecr.us-east-1.amazonaws.com/ecs-lab-api:latest
+$ docker push <account_id>.dkr.ecr.us-east-1.amazonaws.com/ecs-lab-api:latest
 ```
 
 Note: why `:latest`? This is the actual image tag. In most production environments, you'd tag images for different schemes, for example, you might tag the most up-to-date image with `:latest`, and all other versions of the same container with a commit SHA from a CI job. If you push an image without a specific tag, it will default to `:latest`, and untag the previous image with that tag. For more information on Docker tags, see the Docker https://docs.docker.com/engine/reference/commandline/tag/[documentation]. 
