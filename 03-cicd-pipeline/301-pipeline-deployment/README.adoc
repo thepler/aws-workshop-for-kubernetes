@@ -76,12 +76,13 @@ TIP: you can filter stacks by typing in your unique name in the search box
     apiVersion: v1
     data:
       mapRoles: |
+        #LEAVE THE SECTION THAT LOOKS LIKE THIS IN YOUR FILE
         - rolearn: arn:aws:iam::205675256514:role/devel-worker-nodes-NodeInstanceRole-74RF4UBDUKL6
           username: system:node:{{EC2PrivateDNSName}}
           groups:
             - system:bootstrappers
             - system:nodes
-        #MAPPING BELOW IS WHAT YOU NEED TO ADD
+        #ADD IN THE SECTION BELOW, RIGHT UNDER THE EXISTING ONE (NOT AT THE END OF THE FILE)
         - rolearn: arn:aws:iam::205675256514:role/<your lambda execution role from stack output>
           username: admin
           groups:
@@ -111,7 +112,7 @@ Now, add, commit and push:
 
     git add . && git commit -m "test CodeSuite" && git push origin master
 
-To view the pipeline in the AWS console go to the outputs tab for the pipeline cloudformation template and click on the Pipeline URL link:
+To view the pipeline in the AWS console go to the Outputs tab of your CloudFormation stack *pipeline-<your_unique_name>* and click on the Pipeline URL link:
 
 image::pipeline-url.png[pipeline-url]
 
